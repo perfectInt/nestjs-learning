@@ -1,0 +1,33 @@
+version: '3.9'
+
+services:
+
+  postgres:
+    container_name: nest-course-postgres
+    image: postgres:12.7-alpine
+    ports:
+      - 5444:5432
+    environment:
+      - POSTGRES_DB=nest-course
+      - POSTGRES_USERNAME=postgres
+      - POSTGRES_PASSWORD=root
+      - PG_DATA=var/lib/postgresql/data
+    volumes:
+      - PG_DATA
+    restart: always
+
+  nest-course:
+    container_name: nest-course
+    build:
+      context: .
+    volumes:
+      - .:/app
+      - /app/node_modules
+    ports:
+      - 5000:5000
+    command: npm run start:dev
+    depends_on:
+      - postgres
+
+volumes:
+  pgdata:
